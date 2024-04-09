@@ -24,7 +24,7 @@ Before reproducing Figures and tables (below), please download the 2016-2020 Ame
 
 ## Reproducing figures and tables of the paper
 
-Figures and tables can be directly reproduced using R scripts located in 'NOHSDP' and 'UNINSUR' directories for two SDoH variables.
+Figures and tables can be directly reproduced using R scripts located in 'NOHSDP' and 'UNINSUR' directories, corresponding to the 'no high school diploma' and 'no health insurance' SDoH variables, respectively.
 
 1. 'No high school diploma' (in the 'NOHSDP' directory)
    - Figure 2: Estimate-association.R
