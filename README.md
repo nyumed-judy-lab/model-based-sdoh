@@ -17,9 +17,9 @@ Please note that this code leverages an aggregated SDoH dataset, downloaded from
 
 ## Preprocessing
 
-Before reproducing Figures and tables (below), please download the 2016-2020 American Community Survey (ACS) 5-Year Data (https://www.census.gov/programs-surveys/acs) and CDC/ATSDR SVI data (https://www.atsdr.cdc.gov/placeandhealth/svi/). Please contact the authors if you have trouble downloading the data.
+Before reproducing Figures and tables (below), please download the 2016-2020 American Community Survey (ACS) 5-Year Data (https://www.census.gov/programs-surveys/acs) and CDC/ATSDR SVI data (https://www.atsdr.cdc.gov/placeandhealth/svi/). Please contact the authors if you have trouble downloading the data. Once you have the data, the preprocessing can be implemented using the following R script:
 
-  - Implement Preprocessing/Preprocessing.R
+  - Preprocessing/Preprocessing.R
 
 
 ## Reproducing figures and tables of the paper
