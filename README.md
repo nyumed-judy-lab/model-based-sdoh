@@ -17,17 +17,19 @@ Please note that this code leverages an aggregated SDoH dataset, downloaded from
 
 ## Preprocessing
 
-Before reproducing Figures and tables (below), please download the 2016-2020 American Community Survey (ACS) 5-Year Data (https://www.census.gov/programs-surveys/acs) and CDC/ATSDR SVI data (https://www.atsdr.cdc.gov/placeandhealth/svi/). Please contact the authors if you have trouble downloading the data. Once you have the data, the preprocessing can be implemented using the following R script:
+Before reproducing Figures and tables (below), please download the 2016-2020 American Community Survey (ACS) 5-Year Data (https://www.census.gov/programs-surveys/acs). Once you have the data, the preprocessing can be implemented using the following R script:
 
-  - Preprocessing/Preprocessing.R
+  - Implement Preprocessing/Preprocessing.R
 
 
 ## Reproducing figures and tables of the paper
 
+(Keep updating)
+
 Figures and tables can be directly reproduced using R scripts located in 'NOHSDP' and 'UNINSUR' directories, corresponding to the 'no high school diploma' and 'no health insurance' SDoH variables, respectively.
 
 1. 'No high school diploma' (in the 'NOHSDP' directory)
-   - Figure 2: Estimate-association.R
+   - Figure 2: EstimateAssociation.R
    - Supplementary Figure 2: VariableSelection.R -> EstimatedCorrelationPlot.R
    - Supplementary Figure 3: VariableSelection.R -> EstimatedCorrelationPlot.R -> FitModel.R
 
