@@ -7,7 +7,7 @@ This code implements the SDoH model (obtain the estimated associations between S
 
 This code performs the following four steps:
 
-1. Date preprocessing
+1. Data preprocessing
 2. Exploring associations between an SDoH and demographic covariates with a weighted mixed-effect model
 3. Variable selection
 4. The final SDoH model
@@ -17,23 +17,23 @@ Please note that this code leverages an aggregated SDoH dataset, downloaded from
 
 ## Preprocessing
 
-Before reproducing Figures and tables (below), please download the 2016-2020 American Community Survey (ACS) 5-Year Data (https://www.census.gov/programs-surveys/acs). Once you have the data, the preprocessing can be implemented using the following R script:
+Before reproducing Figures and tables (below), please download the 2016-2020 American Community Survey (ACS) 5-Year Data (https://www.census.gov/programs-surveys/acs/data.html). Once you have the data, the preprocessing can be implemented using the following R script:
 
   - Implement Preprocessing/Preprocessing.R
 
 
 ## Reproducing figures and tables of the paper
 
-(Keep updating)
+(updating)
 
 Figures and tables can be directly reproduced using R scripts located in 'NOHSDP' and 'UNINSUR' directories, corresponding to the 'no high school diploma' and 'no health insurance' SDoH variables, respectively.
 
 1. 'No high school diploma' (in the 'NOHSDP' directory)
    - Figure 2: EstimateAssociation.R
-   - Supplementary Figure 2: VariableSelection.R -> EstimatedCorrelationPlot.R
-   - Supplementary Figure 3: VariableSelection.R -> EstimatedCorrelationPlot.R -> FitModel.R
+   - Supplementary Figure 2: VariableSelection.R &rarr EstimatedCorrelationPlot.R
+   - Supplementary Figure 3: VariableSelection.R &rarr EstimatedCorrelationPlot.R &rarr FitModel.R
 
 2. 'No health insurance' (in the 'UNINSUR' directory)
    - Supplementary Figure 1: XXX.R
-   - Supplementary Figure 2: XXX.R -> XXX.R
-   - Supplementary Figure 3: XXX.R -> XXX.R
+   - Supplementary Figure 2: XXX.R &rarr XXX.R
+   - Supplementary Figure 3: XXX.R &rarr XXX.R
