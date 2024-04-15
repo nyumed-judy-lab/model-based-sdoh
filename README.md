@@ -30,10 +30,10 @@ Figures and tables can be directly reproduced using R scripts located in 'NOHSDP
 
 1. 'No high school diploma' (in the 'NOHSDP' directory)
    - Figure 2: EstimateAssociation.R
-   - Supplementary Figure 2: VariableSelection.R &rarr EstimatedCorrelationPlot.R
-   - Supplementary Figure 3: VariableSelection.R &rarr EstimatedCorrelationPlot.R &rarr FitModel.R
+   - Supplementary Figure 2: VariableSelection.R &rarr; EstimatedCorrelationPlot.R
+   - Supplementary Figure 3: VariableSelection.R &rarr; EstimatedCorrelationPlot.R &rarr; FitModel.R
 
 2. 'No health insurance' (in the 'UNINSUR' directory)
    - Supplementary Figure 1: XXX.R
-   - Supplementary Figure 2: XXX.R &rarr XXX.R
-   - Supplementary Figure 3: XXX.R &rarr XXX.R
+   - Supplementary Figure 2: XXX.R &rarr; XXX.R
+   - Supplementary Figure 3: XXX.R &rarr; XXX.R
