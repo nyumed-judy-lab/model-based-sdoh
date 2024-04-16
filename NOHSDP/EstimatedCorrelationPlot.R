@@ -81,8 +81,6 @@ which(dat$WCor - lag(dat$WCor) <0)
 library(patchwork)
 library(RColorBrewer)
 library(grid)
-#mycolor=brewer.pal(n = 11, name = "Spectral")
-#mycolor=mycolor[c(10,5,9,2)]
 mycolor=c("dodgerblue2", "orange", "forestgreen", "violetred", "ivory4", "red2", "black")
 mylines=c("solid", "dashed","dotdash", "dotted", "longdash")
 

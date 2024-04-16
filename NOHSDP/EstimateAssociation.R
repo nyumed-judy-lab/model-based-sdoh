@@ -90,3 +90,4 @@ ranef(fit.x)$STATE
 coef(fit.x)$STATE
 
 save.image(file="NOHSDP/Association.RData")
+

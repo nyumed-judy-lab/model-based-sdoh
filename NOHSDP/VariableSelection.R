@@ -168,11 +168,11 @@ print(sapply(evaluation.list[[k]], mean))
 
 
 for(iter in seq(candidate.fixed)){
-#for(iter in 1:8){
-#for(iter in 8:13){
+  #for(iter in 1:8){
+  #for(iter in 8:13){
   
   cat("* ", iter, "th iteration\n")
-
+  
   Fixed <- list()
   for(i in seq(candidate.fixed)){
     cat(i , "th fixed variable out of", length(candidate.fixed) ,"\n")
@@ -209,7 +209,7 @@ for(iter in seq(candidate.fixed)){
     
     #save.candidates[[k]]$AIC <- AIC.fixed
     #save.candidates[[k]]$F_stat=sapply(Fixed, function(x) anova(x)[[4]])
-  
+    
     predicted=mclapply(seq(n.folds), function(l) predict(M.list[[k]][[l]], newdata=validation[[l]]))
     
     evaluation.list[[k]] <- list()

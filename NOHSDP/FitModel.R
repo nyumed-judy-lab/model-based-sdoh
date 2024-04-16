@@ -104,7 +104,7 @@ selected.fml
 a=Sys.time()
 fml=paste0("yhat ~", paste0(selected.fixed, collapse = "+"), "+(",paste0(selected.random, collapse = "+"),"|STATE)")
 fit.x[[j]] =lme4::lmer(formula=as.formula(fml),weights = what, data=dat.temp, control=lmerControl(calc.derivs = FALSE,
-                                                     optCtrl = list(maxfun = 5e5)))
+                                                                                                  optCtrl = list(maxfun = 5e5)))
 b=Sys.time()
 print(b-a)
 tmp<- fixef(fit.x[[j]])

@@ -73,11 +73,11 @@ annocol <- list(Region=c(`Northeast`=setcol[3], `South`=setcol[4],`North Central
 
 # rename variables
 mat<- mat %>% rename(NHB="AFAM", Hispanic="HISP", 
-                       Twomore="TWOMORE", 
-                       Asian="ASIAN", Other="OTHERRACE",
-                       `Age 25-34` = "Age25_34", `Age 35-44` ="Age35_44", 
-                       `Age 45-54` ="Age45_54", `Age 65-74` = "Age65_74", 
-                       `Age 75+` = "Age75over")
+                     Twomore="TWOMORE", 
+                     Asian="ASIAN", Other="OTHERRACE",
+                     `Age 25-34` = "Age25_34", `Age 35-44` ="Age35_44", 
+                     `Age 45-54` ="Age45_54", `Age 65-74` = "Age65_74", 
+                     `Age 75+` = "Age75over")
 
 # draw heatmap
 thres=3
@@ -85,15 +85,15 @@ bk= seq(-thres, thres, length=11)
 row_dend.std = hclust(dist(scale(as.matrix(mat)))) # hierarchical clustering
 
 p<- ComplexHeatmap::pheatmap(as.matrix(mat),
-                        show_rownames=T, show_colnames=T, 
-                        col=mycol,cluster_cols=T, cluster_rows=row_dend.std, breaks=bk,
-                        cellwidth=30, cellheight=11, cutree_rows = NA, 
-                        fontsize=12,
-                        show_row_dend = FALSE, show_column_dend = FALSE,
-                        annotation_row=annotation,
-                        annotation_colors = annocol, row_names_side = "left",
-                        annotation_legend = TRUE,
-                        heatmap_legend_param = list(title = "Coefficient   ", at = seq(-thres, thres, length=7)))
+                             show_rownames=T, show_colnames=T, 
+                             col=mycol,cluster_cols=T, cluster_rows=row_dend.std, breaks=bk,
+                             cellwidth=30, cellheight=11, cutree_rows = NA, 
+                             fontsize=12,
+                             show_row_dend = FALSE, show_column_dend = FALSE,
+                             annotation_row=annotation,
+                             annotation_colors = annocol, row_names_side = "left",
+                             annotation_legend = TRUE,
+                             heatmap_legend_param = list(title = "Coefficient   ", at = seq(-thres, thres, length=7)))
 
 draw(p, heatmap_legend_side = "right", annotation_legend_side = "right",
      legend_grouping = "original")
