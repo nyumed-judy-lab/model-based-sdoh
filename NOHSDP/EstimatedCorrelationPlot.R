@@ -1,16 +1,19 @@
-# Agegroups: "Age25_34, Age35_44, Age45_54, Age55_64, Age65_74, Age75-84, Age85over
+####################################################################################
+### Estimated weighted correlation and their standard deviations with
+### the 'one-standard-error' rule for variable selection.
+####################################################################################
+
 rm(list=ls()); gc()
 library(dplyr)
 library(corrplot)
-library(lme4)
+library(lme4) #"lme4" package version: 1.1-35.1
 library(ggplot2)
 library(stats)
 library(parallel) # parallel version of lapply
 
 load("06ModelSelection/RData/010ModelSelection-AIC-ML_iter10.RData")
 criteria=AIC.list
-#load("04BerksonEstimate-mixedeffect-weightupdate/RData/020VariableSelection-BIC.RData")
-#criteria=BIC.list
+
 getME(M.list[[k]][[1]],"Lambdat")
 summary(M.list[[k]][[1]])
 sapply(M.list[[k]], function(x) isSingular(x))
@@ -67,9 +70,6 @@ dat<- data.frame(name=paste0("(",num.fixed,",", num.random,")"),
 dat$name <- factor(dat$name, levels=dat$name)
 
 ggplot(dat, aes(x=name, y=criteria, group=1)) + geom_point() + geom_line() + 
-  #geom_errorbar(aes(x=name, ymin=criteria-sd.criteria, ymax=criteria+sd.criteria), position=position_dodge(.9),
-  #              width=0.2, colour=mycolor[1], alpha=0.9, linewidth=0.4)+
-  #geom_vline(xintercept=which.min(dat$criteria), linetype="dashed", color = "red") + 
   xlab("the number of (fixed effects, random effects) variables") + ylab("AIC")
 
 dat[which.min(dat$criteria),]
@@ -86,46 +86,6 @@ library(grid)
 mycolor=c("dodgerblue2", "orange", "forestgreen", "violetred", "ivory4", "red2", "black")
 mylines=c("solid", "dashed","dotdash", "dotted", "longdash")
 
-##### 1. MSE
-
-op.idx=which.min(dat$MSE)
-yline<- dat$MSE[op.idx]+dat$sd.MSE[op.idx]
-xline<- min(which(dat$MSE<yline))
-
-ggplot(dat, aes(x=name, y=MSE, group=1)) + geom_point() + geom_line() + 
-  geom_errorbar(aes(x=name, ymin=MSE-sd.MSE, ymax=MSE+sd.MSE), position=position_dodge(.9),
-                width=0.2, colour=mycolor[1], alpha=0.9, linewidth=0.4)+
-  geom_hline(yintercept=yline, linetype="dashed", color = mycolor[3]) +
-  geom_vline(xintercept=xline, linetype="dashed", color = mycolor[6]) +
-  xlab("the number of (fixed effects, random effects) variables")
-
-
-##### 2. Weighted MSE
-
-op.idx=which.min(dat$WMSE)
-yline<- dat$WMSE[op.idx]+dat$sd.WMSE[op.idx]
-xline<- min(which(dat$WMSE<yline))
-
-ggplot(dat, aes(x=name, y=WMSE, group=1)) + geom_point() + geom_line() + 
-  geom_errorbar(aes(x=name, ymin=WMSE-sd.WMSE, ymax=WMSE+sd.WMSE), position=position_dodge(.9),
-                width=0.2, colour=mycolor[1], alpha=0.9, linewidth=0.4)+
-  geom_hline(yintercept=yline, linetype="dashed", color = mycolor[3]) +
-  geom_vline(xintercept=xline, linetype="dashed", color = mycolor[6]) +
-  xlab("the number of (fixed effects, random effects) variables")
-
-
-##### 3. Correlation
-
-op.idx=which.max(dat$Cor)
-yline<- dat$Cor[op.idx]-dat$sd.Cor[op.idx]
-xline<- min(which(dat$Cor>yline))
-
-ggplot(dat, aes(x=name, y=Cor, group=1)) + geom_point() + geom_line() + 
-  geom_errorbar(aes(x=name, ymin=Cor-sd.Cor, ymax=Cor+sd.Cor), position=position_dodge(.9),
-                width=0.2, colour=mycolor[1], alpha=0.9, linewidth=0.4)+
-  geom_hline(yintercept=yline, linetype="dashed", color = mycolor[3]) +
-  geom_vline(xintercept=xline, linetype="dashed", color = mycolor[6]) +
-  xlab("the number of (fixed effects, random effects) variables")
 
 ##### 4. Weighted Correlation
 
@@ -147,27 +107,3 @@ selected.fixed=current.fixed[[xline]]
 selected.random=current.random[[xline]]
 save(selected.fml, selected.fixed, selected.random,
      file="06ModelSelection/RData/011SelectedModelInfo-ML.RData")
-
-# 
-# #--------------------------------------------------------------------------------------------#
-# # Check 
-# aa <- list()
-# #WCorrelation <- vector()
-# for(iter.f in seq(save.fixed.candidates[[5]])){
-#   predicted=predict(save.fixed.candidates[[5]][[iter.f]], newdata=validation)
-#   
-#   weighted_corr <- cov.wt(data.frame(truey, predicted), wt = weights, cor = TRUE)
-#   #WCorrelation<- c(WCorrelation , weighted_corr$cor[1,2])
-# 
-#   # MSE, weighted MSE, and correlation
-#   aa[[iter.f]] <- c(mean((truey-predicted)**2), 
-#                             sum(weights*(truey-predicted)**2)/sum(weights), 
-#                             cor(truey, predicted),  weighted_corr$cor[1,2])
-#   rm(predicted, weighted_corr);gc()
-#   
-# }
-# 
-# aa<- do.call(rbind, aa)
-# colnames(aa) <- c("MSE", "WMSE", "Cor","WCor")
-# which.min(aa[,"WMSE"])
-# which.max(aa[,"WCor"])

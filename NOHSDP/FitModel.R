@@ -1,8 +1,13 @@
-# Agegroups: "Age25_34, Age35_44, Age45_54, Age55_64, Age65_74, Age75-84, Age85over
+####################################################################################
+### Fit the final selected covariates with entire training data 
+### with REML in mixed-effect model
+### "lme4" package version: 1.1-35.1
+####################################################################################
+
 rm(list=ls()); gc()
 library(dplyr)
 library(corrplot)
-library(lme4)
+library(lme4) # "lme4" package version: 1.1-35.1
 library(ggplot2)
 
 load("01BerksonEstimate-byState/RData/02AggregatedSDoH_data.RData")
@@ -44,7 +49,6 @@ names(dat.sdoh)[-c(1:2)]<-c(paste0(sdoh.var,"bar"), "nk")
 
 ##############
 #########
-#Use only individual level observed Zs. no iterations needed.
 tmp1<-paste0(sdoh.var,"bar")
 independentVariableIndices <- list()
 xtmp<- x[!grepl(c("Age20"), x)]
@@ -70,10 +74,6 @@ j=1
 dependentVariable = tmp1[(p-p.z+1):p][j]
 print(dependentVariable)
 dat.temp=dat.sdoh[which(!is.na(dat.sdoh[,dependentVariable])),]
-#dat.temp<- dat.st %>% filter(!is.na(eval(parse_expr(dependentVariable))))
-#dat.temp<- dat.st %>% filter(!is.na(eval(dependentVariable)))
-#independentVariableIndices<-tmp1[1:(p-p.z)]
-#names(dat.sdoh)[independentVariableIndices]
 phat<-dat.temp[,dependentVariable]
 
 phat1<- phat
@@ -82,19 +82,12 @@ phat1[phat==1] = (max(phat[phat!=1])+1)/2
 rm(phat);gc()
 
 yhat<-qnorm(phat1)
-# if(sum(yhat==-Inf)>0){
-#   yhat[yhat==-Inf]<-min(yhat[yhat!=-Inf])}
-# if(sum(yhat==Inf)>0){
-#   yhat[yhat==Inf]<-min(yhat[yhat!=Inf])}
 s2hat<-phat1*(1-phat1)/(dnorm(yhat)*dnorm(yhat))/dat.temp$nk
 what<-1/s2hat
 #what[s2hat==0]<-0
 
 # 
 hist(what)
-# 'comment out'
-#what[what>quantile(what, 0.995)]<- quantile(what, 0.995)
-#hist(what)
 
 ## update
 dat.temp$what <- what
@@ -123,19 +116,3 @@ save.image("06ModelSelection/RData/020Berkson-estimate-mixedeffect-MLselected.RD
 #rownames(ranef.mat[[1]]$STATE)<- state.tb$ST_ABBR[match(rownames(ranef.mat[[1]]$STATE), state.tb$STATE)]
 #save(alpha.mat.x,ranef.mat, sdoh.var, z, x, independentVariableIndices, file="04BerksonEstimate-mixedeffect-weightupdate/RData/010Berkson-estimate-mixedeffect-fullmodel-default1e5-upload.RData")
 
-
-
-#load("04BerksonEstimate-mixedeffect-weightupdate/RData/040Berkson-estimate-nointeraction-mixedeffect-default1e5.RData")
-
-#----- lmerTest in r
-# library(lmerTest)
-# a1=Sys.time()
-# # fixed effect
-# fixef.test<- drop1(fit.x[[1]]) # Using Satterthwaite degrees of freedom
-# # if(requireNamespace("pbkrtest", quietly = TRUE))
-# #   drop1(fit.x[[1]], ddf="Kenward-Roger") # Alternative DenDF and F-test method
-# # drop1(fit.x[[1]], ddf="lme4", test="Chi") # Asymptotic Likelihood ratio tests
-# b1=Sys.time()
-# print(b1-a1)
-# 
-# save.image("04BerksonEstimate-mixedeffect-weightupdate/RData/010Berkson-estimate-mixedeffect-fullmodel-default1e5-randomtestresult.RData")

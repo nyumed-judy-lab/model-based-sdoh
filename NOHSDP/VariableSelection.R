@@ -1,4 +1,7 @@
-# Agegroups: "Age25_34, Age35_44, Age45_54, Age55_64, Age65_74, Age75-84, Age85over
+####################################################################################
+### 10-fold Cross-Validation with the 'one-standard-error' fule for variable selection.
+####################################################################################
+
 rm(list=ls()); gc()
 library(dplyr)
 library(corrplot)
@@ -83,10 +86,6 @@ phat1[phat==1] = (max(phat[phat!=1])+1)/2
 rm(phat);gc()
 
 yhat<-qnorm(phat1)
-# if(sum(yhat==-Inf)>0){
-#   yhat[yhat==-Inf]<-min(yhat[yhat!=-Inf])}
-# if(sum(yhat==Inf)>0){
-#   yhat[yhat==Inf]<-min(yhat[yhat!=Inf])}
 s2hat<-phat1*(1-phat1)/(dnorm(yhat)*dnorm(yhat))/dat.temp$nk
 what<-1/s2hat
 #what[s2hat==0]<-0
