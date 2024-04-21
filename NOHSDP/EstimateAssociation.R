@@ -1,12 +1,11 @@
 ####################################################################################
 ### State-Specific Associations between no high school diploma and demographic covariates
-### "lme4" package version: 1.1-35.1
+### R version: 4.1.2 and "lme4" package version: 1.1-35.1
 ####################################################################################
 
 rm(list=ls()); gc()
 library(dplyr)
-library(ggplot2)
-library(lmerTest) #"lme4" package version: 1.1-35.1
+library(lmerTest)
 
 load("Preprocessing/AggregatedSDoH_data.RData")
 
@@ -26,7 +25,7 @@ dat.sdoh=df.sdoh %>% filter(!is.na(NOHSDP))
 # remove Male, White and Age55_64 dummy. It is a reference group.
 dat.sdoh <- dat.sdoh %>% select(-Male, -WHITE, -Age55_64)
 
-#ref.var <- "STATE"
+# variables
 sdoh.var <- c("Female", "HISP", "AFAM", "ASIAN", "OTHERRACE", "TWOMORE",
               "Age25_34", "Age35_44", "Age45_54", #"Age55_64",
               "Age65_74", "Age75over",

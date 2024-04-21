@@ -1,48 +1,45 @@
 ####################################################################################
 ### Fit the final selected covariates with entire training data 
 ### with REML in mixed-effect model
-### "lme4" package version: 1.1-35.1
+### R version: 4.1.2 and "lme4" package version: 1.1-35.1
 ####################################################################################
 
 rm(list=ls()); gc()
 library(dplyr)
-library(corrplot)
-library(lme4) # "lme4" package version: 1.1-35.1
-library(ggplot2)
+library(lme4)
 
-load("01BerksonEstimate-byState/RData/02AggregatedSDoH_data.RData")
-load("06ModelSelection/RData/011SelectedModelInfo-ML.RData")
+load("Preprocessing/AggregatedSDoH_data.RData")
+load("NOHSDP/SelectedModelInfo.RData")
 
 head(df.sdoh)
-df.sdoh <- df.sdoh %>% select(ST, STATE, ST_ABBR, STCNTY, COUNTY, tract, LOCATION, AREA_SQMI, TOTPOP,
-                              Female, HISP, AFAM, ASIAN, NHPI, OTHERRACE, TWOMORE,
-                              Age20_24, 
-                              Age25_34, Age35_44, Age45_54, Age55_59, Age60_64, 
-                              Age65_74, Age75_84, Age85over, 
-                              NOHSDP, UNINSUR)
-# combine age variables
-df.sdoh <- df.sdoh %>% mutate(Age55_64 = Age55_59+Age60_64) %>% 
-  select(-Age55_59, -Age60_64)
 
-# remove 63 Census tracts that total population is less then 10.
-dat.sdoh=df.sdoh %>% filter(TOTPOP>=10)
-ref.var <- "STATE"
-sdoh.var <- c("Female", "HISP", "AFAM", "ASIAN", "NHPI", "OTHERRACE", "TWOMORE",
-              "Age20_24", "Age25_34", "Age35_44", "Age45_54", "Age55_64", 
-              "Age65_74", "Age75_84", "Age85over", 
-              "NOHSDP", "UNINSUR")
-z <- c("NOHSDP", "UNINSUR")
+# combine age variables
+df.sdoh <- df.sdoh %>% mutate(Age75over=Age75_84+Age85over, OTHERRACE=NHPI+OTHERRACE) %>%
+  select(ST, STATE, ST_ABBR, STCNTY, COUNTY, tract, LOCATION, AREA_SQMI, TOTPOP,
+         Male, Female, HISP, WHITE, AFAM, ASIAN, OTHERRACE, TWOMORE,
+         Age25_34, Age35_44, Age45_54, Age55_64, 
+         Age65_74, Age75over, 
+         NOHSDP)
+
+# remove Census tracts whose NOHSDP is NA.
+dat.sdoh=df.sdoh %>% filter(!is.na(NOHSDP))
+
+# remove Male, White and Age55_64 dummy. It is a reference group.
+dat.sdoh <- dat.sdoh %>% select(-Male, -WHITE, -Age55_64)
+
+# variables
+sdoh.var <- c("Female", "HISP", "AFAM", "ASIAN", "OTHERRACE", "TWOMORE",
+              "Age25_34", "Age35_44", "Age45_54", #"Age55_64",
+              "Age65_74", "Age75over",
+              "NOHSDP")
+z <- c("NOHSDP")
 x <- setdiff(sdoh.var,z)
 p<-length(sdoh.var)
 p.z<- length(z)
 
 # check the number or tracts in each state
 state.tb <- dat.sdoh%>% group_by(ST,STATE,ST_ABBR) %>% 
-  summarise(n=n(), na.NOHSDP=sum(!is.na(NOHSDP)), na.UNINSUR=sum(!is.na(UNINSUR))) %>% ungroup()
-#state.tb <- df.sdoh%>% select(ST, STATE, tract) %>% group_by(ST,STATE) %>% summarise(n.C=n()) %>% ungroup()
-state <- as.vector(state.tb$STATE)
-state_abb <- as.vector(state.tb$ST_ABBR)
-
+  summarise(n=n(), na.NOHSDP=sum(!is.na(NOHSDP))) %>% ungroup()
 
 dat.sdoh<- dat.sdoh %>% select(STATE, tract, all_of(sdoh.var), TOTPOP)
 names(dat.sdoh)[-c(1:2)]<-c(paste0(sdoh.var,"bar"), "nk")
@@ -50,31 +47,14 @@ names(dat.sdoh)[-c(1:2)]<-c(paste0(sdoh.var,"bar"), "nk")
 ##############
 #########
 tmp1<-paste0(sdoh.var,"bar")
-independentVariableIndices <- list()
-xtmp<- x[!grepl(c("Age20"), x)]
-independentVariableIndices[[1]]<- paste0(xtmp[!grepl("Age55", xtmp)],"bar")
-xtmp<- x[!grepl(c("Age65"), x)]
-xtmp<- xtmp[!grepl(c("Age75"), xtmp)]
-independentVariableIndices[[2]]<- paste0(xtmp[!grepl(c("Age85"), xtmp)],"bar")
-alpha.mat.x <- fit.x<- list()
+independentVariableIndices<- paste0(x,"bar")
 
-
-#for(i in seq(state)){
-#  dat.st<- dat.sdoh %>% filter(STATE==state[i])
-alpha.mat.x<-matrix(NA, nrow=p.z, ncol=p-p.z+1)
-rownames(alpha.mat.x)<-tmp1[(p-p.z+1):p]
-#colnames(alpha.mat.x)<-c("(Intercept)",paste0("factor(STATE)",state.tb$STATE), tmp1[2:(p-p.z)])
-colnames(alpha.mat.x)<-c("(Intercept)",tmp1[1:(p-p.z)])
-#fit.x[[i]]<- list()
-fit.x<- ranef.mat <- list()
-
-#dependentVariable<-names(dat.sdoh)[5]
-#for (j in seq(tmp1[(p-p.z+1):p])){
-j=1
-dependentVariable = tmp1[(p-p.z+1):p][j]
+dependentVariable = tmp1[(p-p.z+1):p]
 print(dependentVariable)
-dat.temp=dat.sdoh[which(!is.na(dat.sdoh[,dependentVariable])),]
-phat<-dat.temp[,dependentVariable]
+
+
+#--- Calculate the weight
+phat<-dat.sdoh[,dependentVariable]
 
 phat1<- phat
 phat1[phat==0] =min(phat[phat!=0])/2 
@@ -82,37 +62,39 @@ phat1[phat==1] = (max(phat[phat!=1])+1)/2
 rm(phat);gc()
 
 yhat<-qnorm(phat1)
-s2hat<-phat1*(1-phat1)/(dnorm(yhat)*dnorm(yhat))/dat.temp$nk
+s2hat<-phat1*(1-phat1)/(dnorm(yhat)*dnorm(yhat))/dat.sdoh$nk
 what<-1/s2hat
-#what[s2hat==0]<-0
 
-# 
-hist(what)
+#--- check the distribution of weight 
+#hist(what)
 
-## update
-dat.temp$what <- what
-dat.temp$yhat <- yhat
-rm(what, yhat, phat1, df.sdoh, dat.sdoh, xtmp, tmp1, s2hat, state, state_abb);gc()
-#dat.temp<- dat.temp %>% filter(what!=0)
+#--- update dataframe
+dat.sdoh$what <- what
+dat.sdoh$yhat <- yhat
+rm(what, yhat, phat1, df.sdoh, tmp1, s2hat);gc()
 
 
-# fit.x[[j]] = lm(formula = as.formula(paste("yhat ~", paste(independentVariableIndices[[j]], collapse = "+"), sep = "" )), 
-#                 weights=what, data = dat.temp) 
-# fit.x[[j]] =lme4::lmer(formula=as.formula(paste0("yhat ~", paste0(independentVariableIndices[[j]], collapse = "+"), "+(1|STATE)")),
-#                        weights = what, data=dat.temp)
-selected.fml
+#--- fit the mixed effect model
 a=Sys.time()
+selected.fml
 fml=paste0("yhat ~", paste0(selected.fixed, collapse = "+"), "+(",paste0(selected.random, collapse = "+"),"|STATE)")
-fit.x[[j]] =lme4::lmer(formula=as.formula(fml),weights = what, data=dat.temp, control=lmerControl(calc.derivs = FALSE,
-                                                                                                  optCtrl = list(maxfun = 5e5)))
+fit.x =lme4::lmer(formula=as.formula(fml),weights = what, data=dat.sdoh, 
+                       control=lmerControl(calc.derivs = FALSE, optCtrl = list(maxfun = 5e5)))
 b=Sys.time()
 print(b-a)
-tmp<- fixef(fit.x[[j]])
-ranef.mat[[j]]<- ranef(fit.x[[j]])
-alpha.mat.x[dependentVariable,match(names(tmp),colnames(alpha.mat.x))]<-tmp
 
-save.image("06ModelSelection/RData/020Berkson-estimate-mixedeffect-MLselected.RData")
+# check the model
+#summary(fit.x)
 
-#rownames(ranef.mat[[1]]$STATE)<- state.tb$ST_ABBR[match(rownames(ranef.mat[[1]]$STATE), state.tb$STATE)]
-#save(alpha.mat.x,ranef.mat, sdoh.var, z, x, independentVariableIndices, file="04BerksonEstimate-mixedeffect-weightupdate/RData/010Berkson-estimate-mixedeffect-fullmodel-default1e5-upload.RData")
+# coefficients
+fixef(fit.x)
+ranef(fit.x)$STATE
+coef(fit.x)$STATE
 
+#--- The final selected covariates and the coefficients for ’No high school diploma’.
+mixef.mat=coef(fit.x)$STATE
+rownames(mixef.mat)<- state.tb$ST_ABBR[match(rownames(mixef.mat), state.tb$STATE)]
+mixef.mat # AFAM is NHB
+round(mixef.mat,3)
+
+save.image("NOHSDP/FinalModel.RData")
