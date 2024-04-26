@@ -92,11 +92,11 @@ df.sdoh[,grep("EP_",names(df.sdoh))]<-df.sdoh[,grep("EP_",names(df.sdoh))]/100
 names(df.sdoh)<-gsub("EP_","",names(df.sdoh))
 
 # combine age variables
-df.sdoh <- df.sdoh %>% mutate(Age5_14=Age5_9+Age10_14, Age15_24=Age15_19+Age20_24, 
+df.sdoh <- df.sdoh %>% mutate(Age5_14=Age5_9+Age10_14,
                               Age55_64 = Age55_59+Age60_64) %>%
   select(ST, STATE, ST_ABBR, STCNTY, COUNTY, tract, LOCATION, AREA_SQMI, TOTPOP,
          Male, Female, HISP, WHITE, AFAM, ASIAN, NHPI, OTHERRACE, TWOMORE,
-         Age5under, Age5_14, Age15_24, Age25_34, Age35_44, Age45_54, Age55_64,
+         Age5under, Age5_14, Age15_19, Age20_24, Age25_34, Age35_44, Age45_54, Age55_64,
          Age65_74, Age75_84, Age85over, NOHSDP, UNINSUR)
 
 # remove 63 Census tracts that total population is less then 10.
