@@ -146,7 +146,11 @@ for(iter in seq(candidate.fixed)){
   cat("converge.check: ", converge.check,"\n") # should be equal to n.folds
   cat("singular.check: ", singular.check,"\n") # should be equal to 0.
   
-  if(length(idx)==0 | mean(AIC.list[[k]])<AIC.fixed[idx] | singular.check[idx]>0){ 
+  if(length(idx)==0){ 
+    print("!!!!! STOP HERE !!!!!")
+    #save.image(paste0("NOHSDP/VariableSelection-iter",iter,".RData"))
+    break
+  }else if(mean(AIC.list[[k]])<AIC.fixed[idx] | singular.check[idx]>0){
     print("!!!!! STOP HERE !!!!!")
     #save.image(paste0("NOHSDP/VariableSelection-iter",iter,".RData"))
     break

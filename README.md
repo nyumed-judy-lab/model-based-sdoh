@@ -35,5 +35,5 @@ Figures and tables can be directly reproduced using R scripts located in 'NOHSDP
 
 2. 'No health insurance' (in the 'UNINSUR' directory)
    - Supplementary Figure 1: EstimateAssociation.R &rarr; AssociationHeatmap.R
-   - Supplementary Figure 2(b): XXX.R &rarr; XXX.R
-   - Supplementary Table 3: XXX.R &rarr; XXX.R
+   - Supplementary Figure 2(b): VariableSelection.R &rarr; EstimatedCorrelationPlot.R
+   - Supplementary Table 3: VariableSelection.R &rarr; EstimatedCorrelationPlot.R &rarr; FitModel.R
